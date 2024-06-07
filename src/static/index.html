@@ -4,12 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loctek Desk Controller</title>
-    <script src="script.js" defer></script>
 </head>
 <body>
     <h1>Loctek Desk Controller</h1>
-    <button id="up-button">Up</button>
-    <button id="down-button">Down</button>
+    
+    <!-- Form for sending commands -->
+    <form id="command-form" action="/command" method="post">
+        <button type="submit" name="command" value="up">Up</button>
+        <button type="submit" name="command" value="down">Down</button>
+    </form>
+    
+    <!-- Form for getting height -->
+    <form id="height-form" action="/height" method="get">
+        <button type="submit">Get Height</button>
+    </form>
+    
     <div id="height-display">Height: --</div>
+    
+    <script>
+        document.getElementById("height-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            fetch("/height")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        document.getElementById("height-display").textContent = `Height: ${data.height}`;
+                    } else {
+                        document.getElementById("height-display").textContent = "Height: --";
+                        console.error(`Failed to get height: ${data.message}`);
+                    }
+                });
+        });
+    </script>
 </body>
 </html>
