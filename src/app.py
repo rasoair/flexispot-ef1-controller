@@ -82,7 +82,8 @@ def index():
 @app.route("/command", methods=["POST"])
 def command():
     try:
-        command = request.form.get('command')
+        req_data = request.get_json()
+        command = req_data['command']
         locktek = create_loctek_instance()
         locktek.execute_command(command)
         return jsonify({"status": "success", "command": command}), 200

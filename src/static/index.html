@@ -3,27 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Loctek Desk Controller</title>
 </head>
 <body>
     <h1>Loctek Desk Controller</h1>
     
     <!-- Form for sending commands -->
-    <form id="command-form" action="/command" method="post">
-        <button type="submit" name="command" value="up">Up</button>
-        <button type="submit" name="command" value="down">Down</button>
+    <form id="command-form">
+        <button id="upbutton" type="button" name="command" value="up" onclick="sendCommand('up')">Up</button>
+        <button id="downbutton" type="button" name="command" value="down" onclick="sendCommand('down')">Down</button>
     </form>
     
     <!-- Form for getting height -->
-    <form id="height-form" action="/height" method="get">
-        <button type="submit">Get Height</button>
+    <form id="height-form">
+        <button type="button" onclick="getHeight()">Get Height</button>
     </form>
     
     <div id="height-display">Height: --</div>
     
     <script>
-        document.getElementById("height-form").addEventListener("submit", function(event) {
-            event.preventDefault();
+        function sendCommand(command) {
+            fetch("/command", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ command: command })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    console.log(`Command ${command} executed successfully.`);
+                } else {
+                    console.error(`Failed to execute command: ${data.message}`);
+                }
+            });
+        }
+
+        function getHeight() {
             fetch("/height")
                 .then(response => response.json())
                 .then(data => {
@@ -34,7 +52,9 @@
                         console.error(`Failed to get height: ${data.message}`);
                     }
                 });
-        });
+        }
+
+        setInterval(getHeight, 1000);
     </script>
 </body>
 </html>
