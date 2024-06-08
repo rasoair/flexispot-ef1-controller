@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Loctek Desk Controller</title>
+    <title>CPSLAB_Desk_RemoteController</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Loctek Desk Controller</h1>
-    
-    <!-- Form for sending commands -->
-    <form id="command-form">
-        <button id="upbutton" type="button" name="command" value="up" onclick="sendCommand('up')">Up</button>
-        <button id="downbutton" type="button" name="command" value="down" onclick="sendCommand('down')">Down</button>
-    </form>
-    
-    <!-- Form for getting height -->
-    <form id="height-form">
-        <button type="button" onclick="getHeight()">Get Height</button>
-    </form>
-    
-    <div id="height-display">Height: --</div>
+    <div class="container">
+        <h1>CPSLAB_Desk_RemoteController</h1>
+        
+        <!-- Form for sending commands -->
+        <form id="command-form">
+            <button type="button" name="command" value="up" class="command-up-button" onclick="sendCommand('up')">Up</button>
+            <button type="button" name="command" value="down" class="command-down-button" onclick="sendCommand('down')">Down</button>
+        </form>
+        
+        <!-- Form for getting height -->
+        <form id="height-form">
+            <button type="button" class="height-button" onclick="getHeight()">Get Height</button>
+        </form>
+        
+        <div id="height-display" class="height-display">Height: --</div>
+    </div>
     
     <script>
         function sendCommand(command) {
@@ -46,7 +48,11 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === "success") {
-                        document.getElementById("height-display").textContent = `Height: ${data.height}`;
+                        if(data.height >= 70){
+                            document.getElementById("height-display").textContent = `Height: ${data.height}`;
+                        }else{
+                            document.getElementById("height-display").textContent = "Height: --";
+                        }
                     } else {
                         document.getElementById("height-display").textContent = "Height: --";
                         console.error(`Failed to get height: ${data.message}`);
